@@ -1,7 +1,11 @@
 import fs from 'fs'
 
 function main(folder, code, run) {
-  // list all files in the folder with full path
+  if (!fs.existsSync(folder)) {
+    console.log('Error: Folder does not exist')
+    return
+  }
+
   const files = fs.readdirSync(folder).map(file => ({
     fullname: file,
     extension: file.split('.').pop(),
@@ -9,11 +13,11 @@ function main(folder, code, run) {
     time: fs.statSync(`${folder}/${file}`).mtime
   }))
 
-  // log number of files by extension
   const exts = {};
   files.forEach(f => {
-    if (!exts[f.extension]) exts[f.extension] = 0;
-    exts[f.extension]++;
+    const ext = f.extension.toLocaleUpperCase();
+    if (!exts[ext]) exts[ext] = 0;
+    exts[ext]++;
   })
   console.log('Number of files by extensions: ', exts);
   console.log('');
